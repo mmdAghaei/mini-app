@@ -1,6 +1,40 @@
-import Image from "next/image";
+async function getTickerBySymbol(symbol) {
+    const res = await fetch(
+        "https://api.coinstore.com/api/v1/market/tickers",
+        { cache: "no-store" }
+    );
 
-export default function Balance() {
+    const json = await res.json();
+
+    return (
+        json.data.find((item) => item.symbol === symbol) || null
+    );
+}
+
+async function getTicker24h(symbol) {
+    const ticker = await getTickerBySymbol(symbol);
+    if (!ticker) return null;
+
+    const open = Number(ticker.open);
+    const close = Number(ticker.close);
+
+    const change = close - open;
+    const changePercent = ((change / open) * 100).toFixed(2);
+
+    return {
+        symbol: ticker.symbol,
+        price: close,
+        change: change.toFixed(6),
+        changePercent,
+        isPositive: change >= 0,
+    };
+}
+
+
+export default async function Balance() {
+    const mtxTicker = await getTickerBySymbol("MTXUSDT");
+    const data = await getTicker24h("MTXUSDT");
+
     return (
         <div className="flex h-full flex-col items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32">
             {/* Title */}
@@ -38,7 +72,7 @@ export default function Balance() {
                 </div>
             </div>
 
-            <div className="h-[20rem] w-full max-w-[20rem] relative rounded-2xl border border-white/20 bg-white/20 backdrop-blur-xl shadow-xl mt-10">
+            <div className=" max-w-[25rem] relative rounded-2xl border border-white/20 bg-white/20 backdrop-blur-xl shadow-xl mt-10">
                 <div className="flex items-center mb-4 pl-2 pt-4">
                     <img src="/icons/mtxPageOne.svg" alt="Logo" className="w-8 h-8" />
                     <div className="ml-4">
@@ -47,28 +81,30 @@ export default function Balance() {
                     </div>
                 </div>
                 <div className="text-[1.75rem] sm:text-2xl md:text-3xl font-semibold font-inter text-white text-center inline-block pl-2">
-                    $ 0.0532
+                    {mtxTicker.close}
                 </div>
 
-                <div className="w-full h-[9rem] relative bg-gainsboro" />
+                {/* <div className="w-full h-[9rem] relative bg-gainsboro" /> */}
                 <div className="flex justify-between text-sm sm:text-base md:text-lg flex-row gap-1 p-2">
-                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center p-2">
                         <span className="text-[.9rem] sm:text-[1rem] font-semibold font-inter text-darkgray">24:</span>
-                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-salmon pl-2">-12%</span>
+                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-salmon pl-2">{data.changePercent}%</span>
                     </div>
 
-                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center p-2">
                         <span className="text-[.9rem] sm:text-[1rem] font-semibold font-inter text-darkgray">High:</span>
-                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-white pl-2">-12%</span>
+                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-white pl-2">{mtxTicker.high}</span>
                     </div>
 
-                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center p-2">
                         <span className="text-[.9rem] sm:text-[1rem] font-semibold font-inter text-darkgray">Low:</span>
-                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-white pl-2">-12%</span>
+                        <span className="text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] font-medium font-inter text-white pl-3">{mtxTicker.low}</span>
                     </div>
 
                 </div>
             </div>
+
+
         </div>
     );
 }
