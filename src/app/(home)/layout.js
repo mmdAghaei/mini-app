@@ -43,8 +43,11 @@ export default function HomeLayout({ children }) {
               -z-10
             "
             />
+            <div className="flex flex-1 flex-col items-center  min-h-screen   justify-center pt-[4.625rem] pb-[88px] w-full max-w-full overflow-hidden">
+                {children}
+            </div>
             <Header />
-            {children}
+
             <Footer />
         </div>
     );
