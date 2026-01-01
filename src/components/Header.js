@@ -1,0 +1,51 @@
+import Image from "next/image";
+import React from "react";
+
+export default function Header() {
+    return (
+        <div className="
+  absolute
+  top-8
+  left-1/2
+  -translate-x-1/2
+  w-[90%]
+  max-w-[420px]
+  h-[4.625rem]
+  rounded-[25px]
+
+  bg-white/10
+  backdrop-blur-xl
+  border border-white/20
+
+  flex
+  items-center
+  justify-between
+  px-5
+  text-white
+">
+            {/* Left */}
+            <div className="flex items-center gap-3">
+                <div className="w-[2.563rem] h-[2.563rem] rounded-full bg-white/40" />
+                <b className="text-sm">Mhmd.</b>
+            </div>
+
+            {/* Center wallet */}
+            <div className="
+    px-4 py-1
+    rounded-full
+    bg-white/10
+    text-[0.625rem]
+    font-medium
+  ">
+                0x0d324ff2s...
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-2">
+                <span className="text-[1.1rem] font-medium">0</span>
+                <div className="w-[1.9rem] h-[1.9rem] bg-white/40 rounded-md" />
+            </div>
+        </div>
+
+    );
+}
