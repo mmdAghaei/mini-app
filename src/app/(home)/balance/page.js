@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Balance() {
     return (
-        <div className="flex h-full flex-col items-center justify-center">
+        <div className="flex h-full flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
             {/* Title */}
             <b className="inline-block text-left text-[0.938rem] font-inter text-darkgray">
                 Balance
@@ -11,36 +11,37 @@ export default function Balance() {
             {/* Balance Amount */}
             <div className="relative flex items-center justify-center">
                 {/* Main text */}
-                <b className="absolute inline-block text-[3.063rem] font-inter font-black text-transparent !bg-clip-text [background:linear-gradient(90deg,_#46dfff,_#fff)]">
+                <b className="absolute inline-block text-[2rem] sm:text-[3.063rem] font-inter font-black text-transparent !bg-clip-text [background:linear-gradient(90deg,_#46dfff,_#fff)]">
                     100,000 MTX
                 </b>
 
                 {/* Glow */}
-                <b className="relative inline-block text-[3.063rem] font-inter font-black text-transparent !bg-clip-text [background:conic-gradient(from_180deg_at_50%_50%,_rgba(11,_7,_27,_0.9)_0deg,_rgba(141,_0,_251,_0.9)_76.88deg,_rgba(144,_175,_255,_0.9)_120deg,_rgba(151,_51,_252,_0.9)_161.25deg,_rgba(130,_91,_255,_0.9)_198.75deg,_rgba(111,_229,_187,_0.9)_236.25deg,_rgba(157,_237,_255,_0.9)_260.62deg,_rgba(11,_7,_27,_0.9)_360deg)] [filter:blur(21.7px)]">
+                <b className="relative inline-block text-[2rem] sm:text-[3.063rem] font-inter font-black text-transparent !bg-clip-text [background:conic-gradient(from_180deg_at_50%_50%,_rgba(11,_7,_27,_0.9)_0deg,_rgba(141,_0,_251,_0.9)_76.88deg,_rgba(144,_175,_255,_0.9)_120deg,_rgba(151,_51,_252,_0.9)_161.25deg,_rgba(130,_91,_255,_0.9)_198.75deg,_rgba(111,_229,_187,_0.9)_236.25deg,_rgba(157,_237,_255,_0.9)_260.62deg,_rgba(11,_7,_27,_0.9)_360deg)] [filter:blur(21.7px)]">
                     100,000 MTX
                 </b>
             </div>
 
             {/* Actions */}
-            <div className="flex h-30 w-full flex-row items-center justify-center gap-10">
+            <div className="flex flex-wrap justify-center gap-6 sm:gap-10 w-full">
                 {/* Withdraw */}
-                <div className="flex h-[2.6rem] basis-1/3 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl">
+                <div className="flex h-[2.6rem] w-1/2 sm:basis-1/3 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl">
                     <span className="inline-block text-center text-[0.813rem] font-inter font-semibold text-white opacity-[0.7]">
                         withdraw
                     </span>
                 </div>
 
                 {/* Exchange */}
-                <div className="flex h-[2.6rem] basis-1/3 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl">
+                <div className="flex h-[2.6rem] w-1/2 sm:basis-1/3 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-xl shadow-xl">
                     <span className="inline-block text-center text-[0.813rem] font-inter font-semibold text-white opacity-[0.7]">
                         exchange point
                     </span>
                 </div>
             </div>
 
-            <div className="h-[20rem] w-[20rem] relative rounded-2xl border border-white/20 bg-white/20 backdrop-blur-xl shadow-xl ">
+
+            <div className="h-[20rem] w-full sm:w-[20rem] relative rounded-2xl border border-white/20 bg-white/20 backdrop-blur-xl shadow-xl mt-10">
                 <div className="flex items-center mb-4 pl-2 pt-4">
-                        <img src="/icons/mtxPageOne.svg" alt="Logo" className="w-8 h-8" />
+                    <img src="/icons/mtxPageOne.svg" alt="Logo" className="w-8 h-8" />
                     <div className="ml-4">
                         <h2 className="text-[0.875rem] inline-block font-inter text-white">MediTechX</h2>
                         <p className="text-[0.688rem] font-inter text-silver">MTX</p>
@@ -50,24 +51,22 @@ export default function Balance() {
                     $ 0.0532
                 </div>
 
-
                 <div className="w-full h-[9rem] relative bg-gainsboro" />
-                <div className="flex justify-between text-sm flex-row gap-1 p-2">
-                    <div className="basis-1/3  h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+                <div className="flex justify-between text-sm gap-1 p-2">
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
                         <span className="text-[.9rem] font-semibold font-inter text-darkgray">24:</span>
                         <span className="text-[0.8rem] font-medium font-inter text-salmon pl-2">-12%</span>
                     </div>
 
-                    <div className="basis-1/3  h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
                         <span className="text-[.9rem] font-semibold font-inter text-darkgray">High:</span>
                         <span className="text-[0.8rem] font-medium font-inter text-white pl-2">-12%</span>
                     </div>
-                    
-                    <div className="basis-1/3  h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
+
+                    <div className="basis-1/3 h-[2rem] relative rounded-[3px] bg-gray-100 flex justify-center items-center">
                         <span className="text-[.9rem] font-semibold font-inter text-darkgray">Low:</span>
                         <span className="text-[0.8rem] font-medium font-inter text-white pl-2">-12%</span>
                     </div>
-
                 </div>
             </div>
         </div>

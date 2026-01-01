@@ -20,13 +20,13 @@ export default function Header() {
   flex
   items-center
   justify-between
-  px-5
+  px-4 sm:px-5
   text-white
 ">
             {/* Left */}
             <div className="flex items-center gap-3">
                 <div className="w-[2.563rem] h-[2.563rem] rounded-full bg-white/40" />
-                <b className="text-sm">Mhmd.</b>
+                <b className="text-sm sm:text-base">Mhmd.</b>
             </div>
 
             {/* Center wallet */}
@@ -34,7 +34,7 @@ export default function Header() {
     px-4 py-1
     rounded-full
     bg-white/10
-    text-[0.625rem]
+    text-[0.625rem] sm:text-[0.75rem]
     font-medium
   ">
                 0x0d324ff2s...
@@ -42,10 +42,9 @@ export default function Header() {
 
             {/* Right */}
             <div className="flex items-center gap-2">
-                <span className="text-[1.1rem] font-medium">0</span>
+                <span className="text-[1.1rem] sm:text-[1.25rem] font-medium">0</span>
                 <div className="w-[1.9rem] h-[1.9rem] bg-white/40 rounded-md" />
             </div>
         </div>
-
     );
 }
