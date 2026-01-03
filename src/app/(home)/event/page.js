@@ -112,9 +112,8 @@ export default function Event() {
     ];
 
     return (
-        <div className="min-h-[100dvh] w-full h-screen">
-            <div className="min-h-[100dvh] w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-                {/* ✅ اگه صفحه‌ت تو یه layout باریکه، این max-w کمک می‌کنه درست پر بشه */}
+        <div className="w-full">
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-[calc(88px+1.25rem)]">
                 <div className="mx-auto w-full max-w-6xl">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[clamp(0.75rem,2vw,1.25rem)]">
                         {dataList.map((item, index) => (

@@ -573,9 +573,7 @@ export default function Swap() {
 
     return (
         <div className="min-h-[100dvh] h-screen">
-            {/* ✅ container ریسپانسیو + max width برای دسکتاپ */}
             <div className="mx-auto w-full max-w-[clamp(20rem,80vw,72rem)] px-[clamp(1rem,3vw,2rem)] pt-[clamp(5.5rem,10vh,7rem)] pb-[clamp(3.5rem,8vh,6rem)]">
-                {/* ✅ روی دسکتاپ دو ستونه میشه، روی موبایل تک ستون */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(1rem,2.2vw,1.6rem)]">
                     {groups.map((g) => (
                         <section key={g.category} className="space-y-[clamp(0.75rem,1.6vw,1rem)]">
