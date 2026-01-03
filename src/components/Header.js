@@ -43,7 +43,11 @@ export default function Header() {
             {/* Right */}
             <div className="flex items-center gap-2">
                 <span className="text-[1.1rem] sm:text-[1.25rem] font-medium">0</span>
-                <div className="w-[1.9rem] h-[1.9rem] bg-white/40 rounded-md" />
+                <div
+                    className="w-[1.9rem] h-[1.9rem] rounded-md bg-cover bg-center"
+                    style={{ backgroundImage: "url('/icons/coin.png')" }}
+                />
+
             </div>
         </div>
     );

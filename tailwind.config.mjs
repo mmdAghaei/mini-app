@@ -7,7 +7,7 @@ const config = {
     theme: {
         extend: {
             keyframes: {
-               
+
                 box1: {
                     "9%": { transform: "translate(-26px,0)" },
                     "36%": { transform: "translate(26px,0)" },
@@ -98,14 +98,15 @@ const config = {
                 darkgray: {
                     100: "#aeaeae",
                     200: "#a7a7a7",
-                },
+                }, // ← این کاما خیلی مهمه
                 black: "#000",
                 gainsboro: "#d9d9d9",
                 salmon: "#ff7373",
             },
+
         },
     },
-    plugins: [],
+    plugins: []
 };
 
 export default config;

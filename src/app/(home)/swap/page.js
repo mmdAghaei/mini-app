@@ -1,9 +1,234 @@
-import Image from "next/image";
+'use client';
+
+import Image from 'next/image';
+import { useMemo, useState } from 'react';
 
 export default function Swap() {
+    const [fromAmount, setFromAmount] = useState('0.00');
+    const [toAmount, setToAmount] = useState('0.00');
+    const [address, setAddress] = useState('0xfs3432ri3j32idaejri32r29r322');
+
+    const fromBalance = useMemo(() => 100, []);
+    const toBalance = useMemo(() => 100, []);
+
+    const setMax = () => setFromAmount(fromBalance.toFixed(2));
+
+
     return (
-        <div className="flex h-full flex-col items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32">
-            Swap
+        <div
+            className="
+          w-[560px] max-w-[92vw]
+          rounded-[22px]
+          bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]
+          border border-white/10
+          shadow-[0_20px_60px_rgba(0,0,0,0.55)]
+          overflow-hidden
+        "
+        >
+            <div className="px-8 pt-8 pb-7 relative">
+                {/* Header */}
+                <div className="flex items-start justify-between">
+                    <h1 className="text-[34px] font-semibold tracking-tight text-white/95">
+                        Swap
+                    </h1>
+
+                    <button
+                        className="
+                h-10 w-10 rounded-full
+                border border-white/10
+                bg-white/5
+                flex items-center justify-center
+                shadow-[0_10px_24px_rgba(0,0,0,0.35)]
+                hover:bg-white/8 transition
+              "
+                        aria-label="Swap direction"
+                    >
+                        {/* swap icon */}
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M7 7h10m0 0-2-2m2 2-2 2"
+                                stroke="rgba(255,255,255,0.9)"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                            <path
+                                d="M17 17H7m0 0 2 2m-2-2 2-2"
+                                stroke="rgba(255,255,255,0.9)"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Section 1 label */}
+                <div className="mt-7 flex items-center justify-between">
+                    <p className="text-sm text-white/70">
+                        Balance: <span className="text-white/75">{fromBalance} MTX XP</span>
+                    </p>
+
+                    <button
+                        onClick={setMax}
+                        className="
+                text-[12px] font-semibold tracking-wide
+                px-3 py-1.5 rounded-md
+                bg-[#0b2030]/80
+                border border-white/10
+                text-white/85
+                hover:bg-[#0b2030] transition
+              "
+                    >
+                        MAX
+                    </button>
+                </div>
+
+                {/* From box */}
+                <div
+                    className="
+              mt-3
+              rounded-[22px]
+              border border-white/10
+              bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.08))]
+              px-5 py-4
+              flex items-center justify-between
+            "
+                >
+                    <div className="flex items-center gap-3">
+                        {/* XP coin */}
+                        <Image src={"/icons/coin.png"} width={30} height={30} sizes="100vw" alt="Coin" />
+
+                        <span className="text-[22px] font-semibold text-white/92">MTX XP</span>
+                    </div>
+
+                    <input
+                        value={fromAmount}
+                        onChange={(e) => setFromAmount(e.target.value)}
+                        inputMode="decimal"
+                        className="
+                w-28 bg-transparent
+                text-right text-[26px] font-medium
+                text-white/75 placeholder:text-white/35
+                outline-none
+              "
+                        placeholder="0.00"
+                    />
+                </div>
+
+                {/* Divider line */}
+                <div className="relative mt-5">
+                    <div className="h-px w-full bg-white/10" />
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div
+                            className="
+                  h-10 w-10 rounded-full
+                  bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))]
+                  border border-white/10
+                  shadow-[0_12px_26px_rgba(0,0,0,0.55)]
+                  flex items-center justify-center
+                "
+                        >
+                            {/* down arrow */}
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M12 5v12"
+                                    stroke="rgba(255,255,255,0.88)"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                />
+                                <path
+                                    d="M7 14l5 5 5-5"
+                                    stroke="rgba(255,255,255,0.88)"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section 2 label */}
+                <div className="mt-5">
+                    <p className="text-sm text-white/70">
+                        Balance: <span className="text-white/75">{toBalance} MTX</span>
+                    </p>
+                </div>
+
+                {/* To box */}
+                <div
+                    className="
+              mt-3
+              rounded-[22px]
+              border border-white/10
+              bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.08))]
+              px-5 py-4
+              flex items-center justify-between
+            "
+                >
+                    <div className="flex items-center gap-3">
+                        {/* MTX icon */}
+                        <Image src={"/icons/mtxPageOne.svg"} width={30} height={30} sizes="100vw" alt="Coin" />
+
+                        <span className="text-[22px] font-semibold text-white/92">MTX</span>
+                    </div>
+
+                    <input
+                        value={toAmount}
+                        onChange={(e) => setToAmount(e.target.value)}
+                        inputMode="decimal"
+                        className="
+                w-28 bg-transparent
+                text-right text-[26px] font-medium
+                text-white/75 placeholder:text-white/35
+                outline-none
+              "
+                        placeholder="0.00"
+                    />
+                </div>
+
+                {/* Receiving Address */}
+                <div className="mt-6">
+                    <p className="text-sm text-white/70">Reciving Wallet Address</p>
+
+                    <div
+                        className="
+                mt-3
+                rounded-[22px]
+                border border-white/10
+                bg-[linear-gradient(180deg,rgba(255,255,255,0.05),rgba(0,0,0,0.08))]
+                px-5 py-4
+              "
+                    >
+                        <input
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="
+                  w-full bg-transparent
+                  text-center text-[16px]
+                  text-white/65 placeholder:text-white/35
+                  outline-none
+                "
+                        />
+                    </div>
+                </div>
+
+                {/* Button */}
+                <button
+                    className="
+              mt-7 w-full
+              rounded-full py-4
+              text-[20px] font-semibold
+              bg-[#0a7bb6]
+              text-white
+              shadow-[0_18px_40px_rgba(10,123,182,0.25)]
+              hover:brightness-110 active:brightness-95 transition
+            "
+                >
+                    Swap XP
+                </button>
+            </div>
         </div>
     );
 }
