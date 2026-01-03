@@ -6,7 +6,7 @@ export default function Header() {
         <div
             className="
         fixed
-        top-4
+        top-18
         left-1/2
         -translate-x-1/2
         z-50
