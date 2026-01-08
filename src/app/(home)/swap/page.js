@@ -14,9 +14,11 @@ export default function Swap() {
     const setMax = () => setFromAmount(fromBalance.toFixed(2));
 
     return (
-        <div className='flex justify-center items-center h-full'>
+        <div className='flex justify-center items-center min-h-screen'>
+
             <div
                 className="
+              
         w-full
         max-w-[clamp(20rem,92vw,26rem)]
         rounded-[clamp(1.1rem,2.4vw,1.4rem)]

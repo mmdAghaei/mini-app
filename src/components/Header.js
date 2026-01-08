@@ -1,23 +1,23 @@
+"use client"
 import Image from "next/image";
 import React from "react";
+import { useUser } from "@/components/UserComponnet";
 
 export default function Header() {
+    const { userData } = useUser();
+    console.log(userData);
     return (
         <div
-            className="
-           fixed left-1/2 -translate-x-1/2 z-50
-           top-10
-        w-[90%] max-w-[420px]
-        h-[var(--header-h)]
-        rounded-[25px]
-        bg-white/10 backdrop-blur-xl border border-white/20
-        flex items-center justify-between px-4 sm:px-5 text-white
-      "
+            className="fixed left-1/2 -translate-x-1/2 z-50 top-10 w-[90%] max-w-[420px] h-[var(--header-h)] rounded-[25px] bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-between px-4 sm:px-5 text-white"
         >
             {/* Left */}
             <div className="flex items-center gap-3">
-                <div className="w-[2.563rem] h-[2.563rem] rounded-full bg-white/40" />
-                <b className="text-sm sm:text-base">Mhmd.</b>
+                {userData.photoUrl ? (
+                    <img src={userData.photoUrl} alt="User Profile" className="w-[2.563rem] h-[2.563rem] rounded-full" />
+                ) : (
+                    <div className="w-[2.563rem] h-[2.563rem] rounded-full bg-white/40" />
+                )}
+                <b className="text-sm sm:text-base">{userData.firstName || "Guest"}</b>
             </div>
 
             {/* Center wallet */}

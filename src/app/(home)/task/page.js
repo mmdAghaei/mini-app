@@ -572,8 +572,19 @@ export default function Swap() {
     };
 
     return (
-        <div className="min-h-[100dvh] h-screen">
-            <div className="mx-auto w-full max-w-[clamp(20rem,80vw,72rem)] px-[clamp(1rem,3vw,2rem)] pt-[clamp(5.5rem,10vh,7rem)] pb-[clamp(3.5rem,8vh,6rem)]">
+        <div className="min-h-[100dvh] h-screen"
+            style={{
+                paddingTop: "calc(env(safe-area-inset-top, 0px) + var(--header-top) + var(--header-h) + var(--gap) + 15px)"
+,
+                paddingBottom: "var(--footer-h)",
+            }}
+        >
+            <div className="mx-auto w-full max-w-[clamp(20rem,80vw,72rem)] px-[clamp(1rem,3vw,2rem)] pb-[clamp(3.5rem,8vh,6rem)]"
+            
+                style={{
+                    paddingBottom: "var(--footer-h)",
+                }}
+            >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(1rem,2.2vw,1.6rem)]">
                     {groups.map((g) => (
                         <section key={g.category} className="space-y-[clamp(0.75rem,1.6vw,1rem)]">

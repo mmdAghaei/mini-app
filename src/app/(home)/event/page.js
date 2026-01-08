@@ -112,7 +112,13 @@ export default function Event() {
     ];
 
     return (
-        <div className="w-full">
+        <div className="w-full"
+            style={{
+                paddingTop:
+                    "calc(env(safe-area-inset-top, 0px) + var(--header-top) + var(--header-h) + var(--gap))",
+                paddingBottom: "var(--footer-h)",
+            }}
+        >
             <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-[calc(88px+1.25rem)]">
                 <div className="mx-auto w-full max-w-6xl">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[clamp(0.75rem,2vw,1.25rem)]">

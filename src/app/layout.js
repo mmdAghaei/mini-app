@@ -1,5 +1,8 @@
 import { Geist, Geist_Mono, Inter, Orbitron } from "next/font/google";
 import "./globals.css";
+import Head from "next/head";
+import Script from "next/script";
+import { UserProvider } from "@/components/UserComponnet";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,16 +32,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* اسکریپت رو میاری داخل Body */}
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+        />
+      </head>
+
       <body
-        className={`          
-          ${inter.variable}
-          ${orbitron.variable}
-          ${geistSans.variable}
-          ${geistMono.variable}
+        className="
           font-inter
-          antialiased`}
+          antialiased"
       >
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   );
