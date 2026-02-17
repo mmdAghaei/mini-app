@@ -22,6 +22,7 @@ export default function Splash() {
 
     (async () => {
       try {
+        // 1) auth telegram
         const res = await fetch("/api/auth/telegram", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -29,16 +30,28 @@ export default function Splash() {
         });
 
         const json = await res.json();
-
-        // اگر کاربر جدید بود و رفرال اعمال شد، پاکش کن
         if (json?.success && json?.isNew) localStorage.removeItem("pending_ref");
+        if (!json?.success) return;
 
-        if (json?.success) router.replace("/balance");
+        // 2) بعد auth: ببین ولت ثبت شده یا نه
+        const bal = await fetch("/api/me/balance", {
+          method: "GET",
+          cache: "no-store",
+          headers: { "Cache-Control": "no-store" },
+        });
+
+        const balJson = await bal.json();
+
+        if (balJson?.success && balJson?.wallet_address) {
+          router.replace("/balance");
+        } else {
+          router.replace("/start");
+        }
       } catch (e) {
         console.error(e);
       }
     })();
-  }, [userData?.id]);
+  }, [userData?.id, router]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden">

@@ -1,16 +1,19 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-
+import { useUser } from "@/components/UserComponnet";
 const BalanceContext = createContext(null);
 export const useBalance = () => useContext(BalanceContext);
 
 export function BalanceProvider({ children }) {
+    const { userData } = useUser();
+    const tgId = userData?.id ? String(userData.id) : "";
     const [state, setState] = useState({
         loading: true,
         points: 0,
         tokens: 0,
         wallet_address: null,
     });
+
 
     const refresh = useCallback(async () => {
         try {
