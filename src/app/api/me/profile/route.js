@@ -11,10 +11,6 @@ function hashToken(token) {
         .digest("hex");
 }
 
-function genReferralCode() {
-    // کوتاه، یکتا، مناسب لینک
-    return crypto.randomBytes(5).toString("hex"); // 10 chars
-}
 
 export async function GET(req) {
     try {
@@ -31,26 +27,6 @@ export async function GET(req) {
 
         if (!user) return NextResponse.json({ success: false }, { status: 401 });
 
-        // اگر referral_code نداشت، بساز (با retry ساده برای جلوگیری از تداخل rare)
-        if (!user.referral_code) {
-            for (let i = 0; i < 5; i++) {
-                const code = genReferralCode();
-                try {
-                    await User.updateOne(
-                        { _id: user._id, referral_code: { $in: [null, undefined, ""] } },
-                        { $set: { referral_code: code } }
-                    );
-                    user = await User.findById(user._id)
-                        .select("username profile_picture wallet_address points_balance token_balance referral_code telegram")
-                        .lean();
-                    break;
-                } catch (e) {
-                    // اگر duplicate شد، دوباره تلاش می‌کنیم
-                }
-            }
-        }
-
-        // لیست رفرال‌ها (دوستانی که این کاربر آورده)
         const referrals = await Referral.find({ referrer_id: user._id })
             .populate("referred_id", "username profile_picture telegram points_balance")
             .sort({ createdAt: -1 })

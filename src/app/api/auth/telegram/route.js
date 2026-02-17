@@ -22,7 +22,7 @@ function genReferralCode() {
 export async function POST(req) {
     try {
         await connectMongo(process.env.MONGO_URI);
-
+        await User.syncIndexes();
         const body = await req.json();
 
         // refCode از Splash ارسال میشه

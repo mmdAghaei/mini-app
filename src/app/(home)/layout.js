@@ -1,8 +1,5 @@
-import Head from "next/head";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Server from "next/dist/server/base-server"; // این خط به نظر می‌رسه که به صورت اضافی وارد شده
-import { useUser } from "@/components/UserComponnet";
 
 export default function HomeLayout({ children }) {
     return (

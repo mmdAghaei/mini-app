@@ -1,29 +1,7 @@
-import { Geist, Geist_Mono, Inter, Orbitron } from "next/font/google";
 import "./globals.css";
-import Head from "next/head";
 import Script from "next/script";
 import { UserProvider } from "@/components/UserComponnet";
-import TelegramThemeGuard from "@/components/TelegramThemeGhard";
 import { BalanceProvider } from "@/components/BalanceStore";
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  variable: "--font-orbitron",
-});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Create Next App",
