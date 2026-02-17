@@ -3,7 +3,8 @@ import "./globals.css";
 import Head from "next/head";
 import Script from "next/script";
 import { UserProvider } from "@/components/UserComponnet";
-
+import TelegramThemeGuard from "@/components/TelegramThemeGhard";
+import { BalanceProvider } from "@/components/BalanceStore";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -45,7 +46,9 @@ export default function RootLayout({ children }) {
           antialiased"
       >
         <UserProvider>
-          {children}
+          <BalanceProvider>
+            {children}
+          </BalanceProvider>
         </UserProvider>
       </body>
     </html>
