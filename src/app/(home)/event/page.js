@@ -100,15 +100,8 @@ function EventCard({ item, index }) {
 export default function Event() {
     const dataList = [
         { text: "Hi", image: "", logo: "", isFullWidth: false },
-        { text: "Hello", image: "/path/to/image1.jpg", logo: "", isFullWidth: false },
-        { text: "Welcome", image: "", logo: "/path/to/logo1.png", isFullWidth: true },
-        { text: "Good Morning", image: "", logo: "", isFullWidth: true },
-        { text: "Hi Again", image: "/path/to/image2.jpg", logo: "", isFullWidth: false },
-        { text: "Evening", image: "", logo: "", isFullWidth: false },
-        { text: "Hi Again", image: "/path/to/image2.jpg", logo: "", isFullWidth: false },
-        { text: "Evening", image: "", logo: "", isFullWidth: false },
-        { text: "Hi Again", image: "/path/to/image2.jpg", logo: "", isFullWidth: false },
-        { text: "Evening", image: "", logo: "", isFullWidth: false },
+        { text: "Hello", image: "", logo: "", isFullWidth: false },
+
     ];
 
     return (

@@ -14,20 +14,25 @@ export default function Splash() {
 
     const tgStartParam = window?.Telegram?.WebApp?.initDataUnsafe?.start_param || "";
     const urlRef = new URLSearchParams(window.location.search).get("ref") || "";
-    const refCode = (tgStartParam || urlRef || "").trim();
+
+    const incoming = (tgStartParam || urlRef || "").trim();
+    if (incoming) localStorage.setItem("pending_ref", incoming);
+
+    const refCode = localStorage.getItem("pending_ref") || "";
 
     (async () => {
       try {
         const res = await fetch("/api/auth/telegram", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...userData,
-            refCode, // ✅ این اضافه شد
-          }),
+          body: JSON.stringify({ ...userData, refCode }),
         });
 
         const json = await res.json();
+
+        // اگر کاربر جدید بود و رفرال اعمال شد، پاکش کن
+        if (json?.success && json?.isNew) localStorage.removeItem("pending_ref");
+
         if (json?.success) router.replace("/balance");
       } catch (e) {
         console.error(e);

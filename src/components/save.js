@@ -32,7 +32,7 @@
 import mongoose from "mongoose";
 
 // 1) اتصال
-const MONGO_URI = process.env.MONGO_URI || "mongodb://46.249.99.77:27017/miniapp";
+const MONGO_URI = "mongodb://mmd:mmdAghaei1385@127.0.0.1:27017/miniapp?authSource=admin";
 
 const taskSchema = new mongoose.Schema(
     {
@@ -52,11 +52,11 @@ async function run() {
     await mongoose.connect(MONGO_URI);
 
     const tasks = [
-        { category: "Telegram", title: "Join Telegram Channel #1", xp: 100, icon: "telegram", link: "https://t.me/CHANNEL_1" },
-        { category: "Telegram", title: "Join Telegram Channel #2", xp: 100, icon: "telegram", link: "https://t.me/CHANNEL_2" },
-        { category: "Telegram", title: "Join Telegram Group", xp: 150, icon: "telegram", link: "https://t.me/GROUP_LINK" },
-        { category: "Social", title: "Subscribe on YouTube", xp: 100, icon: "youtube", link: "https://youtube.com/@meditechx" },
-        { category: "Social", title: "Follow on X", xp: 100, icon: "x", link: "https://x.com/meditechx" },
+        { category: "Telegram", title: "Join Telegram Channel #1", xp: 100, icon: "telegram", link: "https://t.me/mtxto" },
+        { category: "Telegram", title: "Join Telegram Channel #2", xp: 100, icon: "telegram", link: "https://t.me/MediTechX" },
+        { category: "Telegram", title: "Join Telegram Group", xp: 150, icon: "telegram", link: "https://t.me/meditechxtoken" },
+        { category: "Social", title: "Subscribe on YouTube", xp: 100, icon: "youtube", link: "https://www.youtube.com/@MediTechX-l1t" },
+        { category: "Social", title: "Follow on X", xp: 100, icon: "x", link: "https://x.com/meditechxinc" },
     ];
 
     for (const t of tasks) {

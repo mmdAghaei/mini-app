@@ -38,12 +38,7 @@ const userSchema = new Schema(
         },
 
         // --- Wallet (بعداً که وصل کرد)
-        wallet_address: {
-            type: String,
-            unique: true,
-            sparse: true, // اجازه میده چندتا کاربر wallet_address خالی داشته باشن
-            index: true,
-        },
+        wallet_address: { type: String, unique: true, sparse: true, index: true },
 
         // --- UI friendly fields (اختیاری، برای راحتی نمایش)
         username: { type: String, default: "" },          // می‌تونی از telegram.username پرش کنی
