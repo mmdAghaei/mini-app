@@ -193,16 +193,61 @@ const Ledger = mongoose.models.Ledger || mongoose.model("Ledger", ledgerSchema);
 const Transaction = mongoose.models.Transaction || mongoose.model("Transaction", transactionSchema);
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
 
+
+const EventSchema = new Schema(
+    {
+        // متن کارت
+        text: { type: String, required: true, trim: true, maxlength: 140 },
+
+        // عکس بک‌گراند (اختیاری) - میتونه مسیر داخلی /public باشه یا لینک https
+        image: { type: String, default: "" },
+
+        // لوگو (اختیاری)
+        logo: { type: String, default: "" },
+
+        // کارت فول‌ویدث
+        isFullWidth: { type: Boolean, default: false },
+
+        // لینک مقصد (مثلاً /event/123 یا https://...)
+        href: { type: String, default: "" },
+
+        // نمایش/عدم نمایش
+        isActive: { type: Boolean, default: true },
+
+        // ترتیب نمایش (عدد کمتر => بالاتر)
+        order: { type: Number, default: 1000 },
+
+        // زمان‌بندی (اختیاری)
+        startsAt: { type: Date, default: null },
+        endsAt: { type: Date, default: null },
+    },
+    { timestamps: true }
+);
+
+EventSchema.index({ isActive: 1, order: 1, createdAt: -1 });
+
+const Event = mongoose.models.Event || mongoose.model("Event", EventSchema);
+const AdminSchema = new Schema(
+    {
+        telegramId: { type: String, required: true, unique: true, index: true }, // "123456789"
+        username: { type: String, default: "" },
+        isActive: { type: Boolean, default: true },
+        note: { type: String, default: "" },
+    },
+    { timestamps: true }
+);
+
+const Admin = mongoose.models.Admin || mongoose.model("Admin", AdminSchema);
 /* -----------------------------
    Exports
 ------------------------------ */
 module.exports = {
     connectMongo,
     User,
-    Task,
+    Task, Admin,
     TaskCompletion,
     Referral,
     Ledger,
     Transaction,
-    Post,
+    Post, Event
 };

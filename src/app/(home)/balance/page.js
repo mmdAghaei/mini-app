@@ -99,7 +99,14 @@ export default function Balance() {
     }, []);
 
     const formatted = new Intl.NumberFormat("en-US").format(data.tokens);
+    const priceNow = Number(mtxTicker?.close ?? 0);
+    const usdValue = data.tokens * priceNow;
 
+    const formattedUsd = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 2,
+    }).format(Number.isFinite(usdValue) ? usdValue : 0);
     return (
         <div className="flex h-full flex-col items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32">
             <b className="inline-block text-left text-[0.938rem] sm:text-base md:text-lg font-inter text-darkgray">
@@ -118,7 +125,13 @@ export default function Balance() {
                     {data.loading ? "..." : `${formatted} MTX`}
                 </b>
             </div>
-
+            <div className="mt-3 text-white/70 text-sm sm:text-base font-inter">
+                {data.loading || !mtxTicker?.close ? (
+                    <span>≈ ... USD</span>
+                ) : (
+                    <span>≈ {formattedUsd}</span>
+                )}
+            </div>
             {/* ... بقیه UI تو بدون تغییر ... */}
 
             <div className=" max-w-[25rem] relative rounded-2xl border border-white/20 bg-white/20 backdrop-blur-xl shadow-xl mt-10">
