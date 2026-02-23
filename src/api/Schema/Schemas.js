@@ -70,15 +70,37 @@ const userSchema = new Schema(
 
 const taskSchema = new Schema(
     {
-        category: { type: String, required: true, index: true },
-        title: { type: String, required: true },
-        xp: { type: Number, required: true },
-        icon: { type: String, required: true }, // telegram | youtube | x
-        link: { type: String, required: true },
+        category: { type: String, required: true, index: true, trim: true, maxlength: 80 },
+        title: { type: String, required: true, trim: true, maxlength: 160 },
+        xp: { type: Number, required: true, min: 1, max: 100000 },
+
+        // حالت آیکن:
+        // preset => telegram | youtube | x
+        // upload => icon_image استفاده می‌شود
+        icon: { type: String, default: "telegram" }, // telegram | youtube | x
+        icon_type: { type: String, enum: ["preset", "upload"], default: "preset" },
+        icon_image: { type: String, default: "" }, // /uploads/... یا https://...
+
+        link: { type: String, required: true, trim: true, maxlength: 2000 },
+
+        // نوع بررسی تکمیل تسک
+        verify_type: {
+            type: String,
+            enum: ["simple", "email_meditechx"], // simple = همین حالت فعلی
+            default: "simple",
+            index: true,
+        },
+
+        // تنظیمات ورودی برای دیالوگ (برای تسک‌های خاص)
+        input_label: { type: String, default: "" },        // مثال: Enter your email
+        input_placeholder: { type: String, default: "" },  // مثال: you@example.com
+
         is_active: { type: Boolean, default: true, index: true },
     },
     { timestamps: true }
 );
+
+taskSchema.index({ is_active: 1, category: 1, createdAt: 1 });
 
 /* -----------------------------
    TaskCompletion (کاربر کدام تسک را انجام داده)
@@ -88,8 +110,15 @@ const taskCompletionSchema = new Schema(
         user_id: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
         task_id: { type: Schema.Types.ObjectId, ref: "Task", required: true, index: true },
         xp_earned: { type: Number, required: true },
+        // داخل taskCompletionSchema
+        proof: {
+            email: { type: String, default: "" }, // اگر می‌خوای plain نگه داری (پیشنهاد کمتر)
+            email_hash: { type: String, default: "" }, // پیشنهاد بهتر
+            verify_type: { type: String, default: "" },
+            external_status: { type: Number, default: 0 },
+        },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
 
 // جلوگیری از دوبار انجام دادن یک تسک توسط یک کاربر

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useBalance } from "@/components/BalanceStore";
+import { useRouter } from "next/navigation";
 
 /* utils */
 function groupByCategory(items) {
@@ -13,13 +14,21 @@ function groupByCategory(items) {
     return Array.from(map, ([category, tasks]) => ({ category, tasks }));
 }
 
-function isValidHttpUrl(value) {
+function isHttpUrl(value) {
     try {
         const u = new URL(value);
         return u.protocol === "http:" || u.protocol === "https:";
     } catch {
         return false;
     }
+}
+
+function isRelativePath(value) {
+    return typeof value === "string" && value.startsWith("/") && !value.startsWith("//");
+}
+
+function isOpenableLink(value) {
+    return isHttpUrl(value) || isRelativePath(value);
 }
 
 function Icon({ icon, className = "w-5 h-5" }) {
@@ -83,20 +92,38 @@ function CoinIcon() {
 
 function TaskCard({ item, onOpen }) {
     const iconWrap =
-        item.icon === "telegram"
-            ? "bg-sky-500/90 text-white rounded-full"
-            : item.icon === "youtube"
-                ? "bg-red-600/90 text-white rounded-xl"
-                : "bg-white/10 text-white/85 rounded-xl";
+        item.icon_type === "upload" && item.icon_image
+            ? "bg-white/10 text-white/85 rounded-xl"
+            : item.icon === "telegram"
+                ? "bg-sky-500/90 text-white rounded-full"
+                : item.icon === "youtube"
+                    ? "bg-red-600/90 text-white rounded-xl"
+                    : "bg-white/10 text-white/85 rounded-xl";
 
     return (
         <div className="rounded-[clamp(1rem,2.2vw,1.25rem)] overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-[0_14px_40px_rgba(0,0,0,0.45)]">
             <div className="px-[clamp(1rem,2.4vw,1.25rem)] pt-[clamp(0.9rem,2vw,1.1rem)] pb-[clamp(0.75rem,1.6vw,0.9rem)]">
                 <div className="flex items-center gap-[clamp(0.6rem,1.6vw,0.85rem)]">
-                    <div className={["flex items-center justify-center h-[clamp(2.4rem,4.2vw,2.75rem)] w-[clamp(2.4rem,4.2vw,2.75rem)]", iconWrap].join(" ")}>
-                        <Icon icon={item.icon} className="w-[clamp(1.1rem,2vw,1.25rem)] h-[clamp(1.1rem,2vw,1.25rem)]" />
+                    <div
+                        className={[
+                            "flex items-center justify-center h-[clamp(2.4rem,4.2vw,2.75rem)] w-[clamp(2.4rem,4.2vw,2.75rem)] overflow-hidden",
+                            iconWrap,
+                        ].join(" ")}
+                    >
+                        {item.icon_type === "upload" && item.icon_image ? (
+                            <img
+                                src={item.icon_image}
+                                alt=""
+                                className="w-[clamp(1.2rem,2vw,1.35rem)] h-[clamp(1.2rem,2vw,1.35rem)] object-contain"
+                            />
+                        ) : (
+                            <Icon icon={item.icon} className="w-[clamp(1.1rem,2vw,1.25rem)] h-[clamp(1.1rem,2vw,1.25rem)]" />
+                        )}
                     </div>
-                    <p className="text-[clamp(0.95rem,0.9vw,1.05rem)] font-medium text-white/90 leading-snug">{item.title}</p>
+
+                    <p className="text-[clamp(0.95rem,0.9vw,1.05rem)] font-medium text-white/90 leading-snug">
+                        {item.title}
+                    </p>
                 </div>
             </div>
 
@@ -105,7 +132,9 @@ function TaskCard({ item, onOpen }) {
             <div className="px-[clamp(1rem,2.4vw,1.25rem)] py-[clamp(0.75rem,1.6vw,0.95rem)] flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 text-amber-300">
                     <CoinIcon />
-                    <span className="text-[clamp(0.78rem,0.75vw,0.85rem)] font-semibold tracking-wide">+{item.xp} XP</span>
+                    <span className="text-[clamp(0.78rem,0.75vw,0.85rem)] font-semibold tracking-wide">
+                        +{item.xp} XP
+                    </span>
                 </div>
 
                 <button
@@ -123,15 +152,28 @@ function GoDialog({ open, item, onClose, onClaim }) {
     const [mounted, setMounted] = useState(false);
     const [went, setWent] = useState(false);
     const [claiming, setClaiming] = useState(false);
+    const [claimError, setClaimError] = useState("");
+
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
 
     const link = item?.link || "";
-    const canOpen = isValidHttpUrl(link);
+    const canOpen = isOpenableLink(link);
     const canCheck = went && !claiming;
+    const needsEmail = item?.verify_type === "email_meditechx";
+
+    function isValidEmail(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
+    }
 
     useEffect(() => {
         if (open) {
             setMounted(true);
             setWent(false);
+            setClaimError("");
+            setEmail("");
+            setEmailError("");
+
             const prev = document.body.style.overflow;
             document.body.style.overflow = "hidden";
             return () => {
@@ -148,20 +190,46 @@ function GoDialog({ open, item, onClose, onClaim }) {
     const handleGo = () => {
         if (!canOpen) return;
 
-        // داخل تلگرام بهتره این رو بزنی:
+        // لینک داخلی
+        if (isRelativePath(link)) {
+            window.location.href = link;
+            setWent(true);
+            return;
+        }
+
+        // لینک خارجی
         const tg = window?.Telegram?.WebApp;
-        if (tg?.openTelegramLink && link.includes("t.me/")) tg.openTelegramLink(link);
-        else window.open(link, "_blank", "noopener,noreferrer");
+        if (tg?.openTelegramLink && link.includes("t.me/")) {
+            tg.openTelegramLink(link);
+        } else {
+            window.open(link, "_blank", "noopener,noreferrer");
+        }
 
         setWent(true);
     };
 
     const handleCheck = async () => {
         if (!canCheck) return;
+
+        setClaimError("");
         setClaiming(true);
+
         try {
-            await onClaim(item._id);
+            if (needsEmail) {
+                const e = email.trim().toLowerCase();
+                if (!isValidEmail(e)) {
+                    setEmailError("Please enter a valid email.");
+                    return;
+                }
+                setEmailError("");
+                await onClaim(item._id, { email: e });
+            } else {
+                await onClaim(item._id);
+            }
+
             onClose();
+        } catch (e) {
+            setClaimError(e?.message || "Check failed");
         } finally {
             setClaiming(false);
         }
@@ -169,17 +237,32 @@ function GoDialog({ open, item, onClose, onClaim }) {
 
     return (
         <div className="fixed inset-0 z-[500] flex items-end justify-center">
-            <div className={["absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200", open ? "opacity-100" : "opacity-0"].join(" ")} onClick={onClose} />
+            <div
+                className={[
+                    "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200",
+                    open ? "opacity-100" : "opacity-0",
+                ].join(" ")}
+                onClick={onClose}
+            />
 
-            <div className={["relative w-full max-w-[30rem] transition-transform transition-opacity duration-200 ease-out", open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full"].join(" ")}>
+            <div
+                className={[
+                    "relative w-full max-w-[30rem] transition-transform transition-opacity duration-200 ease-out",
+                    open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full",
+                ].join(" ")}
+            >
                 <div className="rounded-t-3xl bg-slate-950/95 border border-white/10 shadow-[0_-20px_60px_rgba(0,0,0,0.7)] overflow-hidden">
                     <div className="flex justify-center pt-3">
                         <div className="h-1.5 w-10 rounded-full bg-white/25" />
                     </div>
 
                     <div className="flex justify-center mt-4">
-                        <div className="h-20 w-20 rounded-3xl bg-white/10 border border-white/15 flex items-center justify-center">
-                            <Icon icon={item.icon} className="w-8 h-8 text-white" />
+                        <div className="h-20 w-20 rounded-3xl bg-white/10 border border-white/15 flex items-center justify-center overflow-hidden">
+                            {item.icon_type === "upload" && item.icon_image ? (
+                                <img src={item.icon_image} alt="" className="w-10 h-10 object-contain" />
+                            ) : (
+                                <Icon icon={item.icon} className="w-8 h-8 text-white" />
+                            )}
                         </div>
                     </div>
 
@@ -196,21 +279,54 @@ function GoDialog({ open, item, onClose, onClaim }) {
                                 Go
                             </button>
 
+                            {needsEmail && (
+                                <div className="space-y-2">
+                                    <label className="block text-sm text-white/80">
+                                        {item.input_label || "Enter your email"}
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder={item.input_placeholder || "you@example.com"}
+                                        className="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-white/30"
+                                        autoCapitalize="none"
+                                        autoCorrect="off"
+                                        inputMode="email"
+                                    />
+                                    {emailError && <p className="text-xs text-rose-300">{emailError}</p>}
+                                </div>
+                            )}
+
                             <button
                                 onClick={handleCheck}
                                 disabled={!canCheck}
                                 className={[
                                     "w-full rounded-2xl py-4 font-semibold text-base border transition",
-                                    canCheck ? "bg-white/20 border-white/30 text-white" : "bg-white/10 border-white/15 text-white/60",
+                                    canCheck
+                                        ? "bg-white/20 border-white/30 text-white"
+                                        : "bg-white/10 border-white/15 text-white/60",
                                 ].join(" ")}
                             >
                                 {claiming ? "Checking..." : "Check"}
                             </button>
 
-                            {!went ? <p className="text-center text-xs text-white/40">First press Go, then join and come back to press Check.</p> : null}
+                            {!went ? (
+                                <p className="text-center text-xs text-white/40">
+                                    First press Go, then join and come back to press Check.
+                                </p>
+                            ) : null}
+
+                            {claimError ? (
+                                <p className="text-center text-sm text-rose-300">{claimError}</p>
+                            ) : null}
                         </div>
 
-                        {!canOpen ? <p className="mt-4 text-center text-sm text-rose-300">Link is not valid (http/https)</p> : null}
+                        {!canOpen ? (
+                            <p className="mt-4 text-center text-sm text-rose-300">
+                                Link is not valid (http/https or /path)
+                            </p>
+                        ) : null}
                     </div>
                 </div>
             </div>
@@ -222,12 +338,32 @@ export default function TasksPage() {
     const [tasks, setTasks] = useState([]);
     const [selected, setSelected] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const router = useRouter();
+    const { setPoints } = useBalance();
 
     useEffect(() => {
         (async () => {
-            const res = await fetch("/api/tasks");
-            const json = await res.json();
-            if (json.success) setTasks(json.tasks || []);
+            try {
+                const res = await fetch("/api/admin/me", { cache: "no-store" });
+                const json = await res.json();
+                setIsAdmin(Boolean(json?.success && json?.isAdmin));
+            } catch {
+                setIsAdmin(false);
+            }
+        })();
+
+        (async () => {
+            try {
+                const res = await fetch("/api/tasks", { cache: "no-store" });
+                const ct = res.headers.get("content-type") || "";
+                if (!ct.includes("application/json")) return;
+                const json = await res.json();
+                if (json?.success) setTasks(json.tasks || []);
+            } catch {
+                // optionally show toast
+            }
         })();
     }, []);
 
@@ -237,36 +373,66 @@ export default function TasksPage() {
         setSelected(item);
         setDialogOpen(true);
     };
-    const { setPoints } = useBalance();
 
-    const onClaim = async (taskId) => {
+    const onClaim = async (taskId, extra = {}) => {
         const res = await fetch("/api/tasks/complete", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ taskId }),
+            headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
+            cache: "no-store",
+            body: JSON.stringify({ taskId, ...extra }),
         });
 
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("application/json")) {
+            const t = await res.text();
+            throw new Error(`Non-JSON response (${res.status})`);
+        }
+
         const json = await res.json();
-        if (!json.success) throw new Error(json.message || "claim failed");
+        if (!res.ok || !json?.success) throw new Error(json?.message || "claim failed");
 
-        // ✅ همین باعث میشه Header/Profile بدون رفرش آپدیت شه
         setPoints(json.points);
-
         setTasks((prev) => prev.filter((t) => t._id !== taskId));
     };
+
     return (
         <div
             className="min-h-[100dvh] h-screen"
             style={{
-                paddingTop: "calc(env(safe-area-inset-top, 0px) + var(--header-top) + var(--header-h) + var(--gap) + 15px)",
+                paddingTop:
+                    "calc(env(safe-area-inset-top, 0px) + var(--header-top) + var(--header-h) + var(--gap) + 15px)",
                 paddingBottom: "calc(var(--footer-h) + 120px + var(--gap))",
             }}
         >
-            <div className="mx-auto w-full max-w-[clamp(20rem,80vw,72rem)]  pb-[clamp(3.5rem,8vh,6rem)]"
+            <div
+                className="mx-auto w-full max-w-[clamp(20rem,80vw,72rem)] pb-[clamp(3.5rem,8vh,6rem)]"
+                style={{ paddingBottom: "calc(var(--footer-h) + 20px + var(--gap))" }}
+            >
+                {/* header */}
+                <div className="mb-4 flex items-center justify-between gap-3">
+                    <div>
+                        <h1 className="text-white/90 font-semibold text-lg">Tasks</h1>
+                        <p className="text-white/50 text-sm">{tasks.length} item(s)</p>
+                    </div>
 
-                style={{
-                    paddingBottom: "calc(var(--footer-h) + 20px + var(--gap))",
-                }}>
+                    {isAdmin && (
+                        <button
+                            onClick={() => router.push("/dashboard/task/add")}
+                            className={[
+                                "inline-flex items-center gap-2",
+                                "rounded-xl px-4 py-2",
+                                "border border-white/15 bg-white/5 backdrop-blur",
+                                "text-white/85 text-sm font-medium",
+                                "hover:bg-white/10 hover:border-white/25 transition",
+                            ].join(" ")}
+                            aria-label="Add Task"
+                            title="Add Task"
+                        >
+                            Add Task
+                        </button>
+                    )}
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-[clamp(1rem,2.2vw,1.6rem)]">
                     {groups.map((g) => (
                         <section key={g.category} className="space-y-[clamp(0.75rem,1.6vw,1rem)]">
@@ -284,7 +450,12 @@ export default function TasksPage() {
                 </div>
             </div>
 
-            <GoDialog open={dialogOpen} item={selected} onClose={() => setDialogOpen(false)} onClaim={onClaim} />
+            <GoDialog
+                open={dialogOpen}
+                item={selected}
+                onClose={() => setDialogOpen(false)}
+                onClaim={onClaim}
+            />
         </div>
     );
 }
