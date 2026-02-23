@@ -26,8 +26,8 @@ export async function GET(req) {
             .sort({ createdAt: 1 })
             .lean();
 
-        return NextResponse.json({ success: true, tasks });
+        return NextResponse.json({ success: true, tasks },{headers: { "Cache-Control": "no-store" }});
     } catch (e) {
-        return NextResponse.json({ success: false, message: e?.message || "server error" }, { status: 500 });
+        return NextResponse.json({ success: false, message: e?.message || "server error" }, { status: 500 }, { headers: { "Cache-Control": "no-store" } });
     }
 }

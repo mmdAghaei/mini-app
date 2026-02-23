@@ -92,6 +92,8 @@ export async function POST(req) {
                     headers: {
                         "Content-Type": "application/json",
                         Accept: "application/json",
+                        "Api-Key": process.env.MEDITECHX_API_KEY,
+
                     },
                     body: JSON.stringify({ email }),
                     signal: controller.signal,

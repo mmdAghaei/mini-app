@@ -160,7 +160,9 @@ function GoDialog({ open, item, onClose, onClaim }) {
     const link = item?.link || "";
     const canOpen = isOpenableLink(link);
     const canCheck = went && !claiming;
-    const needsEmail = item?.verify_type === "email_meditechx";
+    const verifyType = String(item?.verify_type || "").trim().toLowerCase();
+    const hasEmailInputs = Boolean(item?.input_label || item?.input_placeholder);
+    const needsEmail = verifyType === "email_meditechx" || (verifyType === "" && hasEmailInputs);
 
     function isValidEmail(v) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
@@ -458,4 +460,5 @@ export default function TasksPage() {
             />
         </div>
     );
+
 }
